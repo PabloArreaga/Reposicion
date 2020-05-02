@@ -149,35 +149,7 @@ namespace Reposicion.Lab6
                     //Archivo-Llave-Desifrado
                     Cesar.TodoCesar(thisFile, key, "Desifrado");
                 }
-
-               
             }
-
-
-            //string nombreArchivo = Path.GetFileNameWithoutExtension(ArchivoImportado.Name);
-            //ArchivoImportado.Close();
-            //using (FileStream archivo = new FileStream("Mis Cifrados/" + nombreArchivo + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite))
-            //{
-            //    var bufferLength = 80;
-            //    var buffer = new byte[bufferLength];
-            //    using (var file = new FileStream(nombreArchivo, FileMode.Open))
-            //    {
-            //        using (var reader = new BinaryReader(file))
-            //        {
-            //            while (reader.BaseStream.Position != reader.BaseStream.Length)
-            //            {
-            //                buffer = reader.ReadBytes(bufferLength);
-            //                foreach (var item in buffer)
-            //                {
-            //                    BigInteger valor = new BigInteger(item);
-            //                    archivo.WriteByte(Convert.ToByte(Metodo(valor, e, mod)));
-            //                }
-            //            }
-            //            reader.ReadBytes(bufferLength);
-            //        }
-            //    }
-            //}
-
         }
         private string Metodo(BigInteger original, int e, BigInteger mod)
         {
