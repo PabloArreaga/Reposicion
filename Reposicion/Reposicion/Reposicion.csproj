@@ -9,6 +9,7 @@
     <Folder Include="Lab4\" />
     <Folder Include="Lab5\" />
     <Folder Include="Lab6\" />
+    <Folder Include="Mis Cifrados\" />
     <Folder Include="Models\" />
   </ItemGroup>
 

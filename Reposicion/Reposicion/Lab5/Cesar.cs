@@ -9,7 +9,7 @@ namespace Reposicion.Lab5
         {
             var nombreArchivo = Path.GetFileNameWithoutExtension(ArchivoImportado.Name);
             ArchivoImportado.Close();
-            using (var Lectura = new StreamReader(("Mis Cifrados/" + nombreArchivo + ".txt"), Encoding.ASCII, true))
+            using (var Lectura = new StreamReader(("Mis Cifrados/" + nombreArchivo + ".txt"), Encoding.ASCII,true))
             {
                 var txtInicio = Lectura.ReadToEnd();
                 var txtFinal = string.Empty;

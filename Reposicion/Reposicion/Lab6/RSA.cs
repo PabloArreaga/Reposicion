@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using Microsoft.AspNetCore.Http;
+using Reposicion.Lab5;
 
 namespace Reposicion.Lab6
 {
@@ -108,38 +110,93 @@ namespace Reposicion.Lab6
             return v0;
         }
 
-        // pendiente la validacion si una de las llaves es mayor a 255
-        public void CifrarDescifrar(FileStream ArchivoImportado, string Llave)
+        public void CifrarDescifrar(IFormFile ArchivoImportado, IFormFile ArchivoLlave,  string Llave, int LlaveCesar)
         {
             string[] claves = Llave.Split(',');
             int e = int.Parse(claves[0]);
             BigInteger mod = new BigInteger(int.Parse(claves[1]));
-            string nombreArchivo = Path.GetFileNameWithoutExtension(ArchivoImportado.Name);
 
-            using (FileStream archivo = new FileStream("Mis Cifrados/" + nombreArchivo + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite))
+            if (ArchivoLlave == null) // Cifrar
             {
-                var bufferLength = 80;
-                var buffer = new byte[bufferLength];
-                using (var file = new FileStream(nombreArchivo, FileMode.Open))
+                using (FileStream thisFile = new FileStream("Mis Cifrados/" + ArchivoImportado, FileMode.OpenOrCreate))
                 {
-                    using (var reader = new BinaryReader(file))
+                    Cesar Cesar = new Cesar();
+                    //Archivo-Llave-Desifrado
+                    Cesar.TodoCesar(thisFile, LlaveCesar, "Cifrado");
+                }
+                byte[] llaveC = Encoding.ASCII.GetBytes(LlaveCesar.ToString());
+                using (var writeStream = new FileStream(("Mis Cifrados/" + "Llave_Cif.txt"), FileMode.OpenOrCreate))
+                {
+                    foreach (var item in llaveC)
                     {
-                        while (reader.BaseStream.Position != reader.BaseStream.Length)
-                        {
-                            buffer = reader.ReadBytes(bufferLength);
-                            foreach (var item in buffer)
-                            {
-                                BigInteger valor = new BigInteger(item);
-                                archivo.WriteByte(Convert.ToByte(Metodo(valor, e, mod)));
-                            }
-                        }
-                        reader.ReadBytes(bufferLength);
+                        BigInteger valor = new BigInteger(item);
+                        byte n = Convert.ToByte(Metodo(valor, e, mod));
+                        writeStream.WriteByte(n);
                     }
                 }
+                
+            }
+            else // Descifrar
+            {
+                var archivoByte = new byte[ArchivoLlave.Length];
+
+                using (FileStream KeyFile = new FileStream("Mis Cifrados/" + ArchivoLlave.FileName, FileMode.OpenOrCreate))
+                {
+                    var nombreArchivo = Path.GetFileNameWithoutExtension(KeyFile.Name);
+                    var extrencion = Path.GetExtension(KeyFile.Name);
+                    var i = 0;
+                    using (var lectura = new BinaryReader(KeyFile))
+                    {
+                        while (lectura.BaseStream.Position != lectura.BaseStream.Length)
+                        {
+                            BigInteger valor = new BigInteger(lectura.ReadByte());
+                            byte n = Convert.ToByte(Metodo(valor, e, mod));
+                            archivoByte[i] = n;
+                            i++;
+
+                        }
+                    }
+                }
+                var clave = System.Text.Encoding.Default.GetString(archivoByte);
+                var key = Int32.Parse(clave);
+
+                using (FileStream thisFile = new FileStream("Mis Cifrados/" + ArchivoImportado.FileName, FileMode.OpenOrCreate))
+                {
+                    Cesar Cesar = new Cesar();
+                    //Archivo-Llave-Desifrado
+                    Cesar.TodoCesar(thisFile, key, "Desifrado");
+                }
+
+               
             }
 
+
+            //string nombreArchivo = Path.GetFileNameWithoutExtension(ArchivoImportado.Name);
+            //ArchivoImportado.Close();
+            //using (FileStream archivo = new FileStream("Mis Cifrados/" + nombreArchivo + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite))
+            //{
+            //    var bufferLength = 80;
+            //    var buffer = new byte[bufferLength];
+            //    using (var file = new FileStream(nombreArchivo, FileMode.Open))
+            //    {
+            //        using (var reader = new BinaryReader(file))
+            //        {
+            //            while (reader.BaseStream.Position != reader.BaseStream.Length)
+            //            {
+            //                buffer = reader.ReadBytes(bufferLength);
+            //                foreach (var item in buffer)
+            //                {
+            //                    BigInteger valor = new BigInteger(item);
+            //                    archivo.WriteByte(Convert.ToByte(Metodo(valor, e, mod)));
+            //                }
+            //            }
+            //            reader.ReadBytes(bufferLength);
+            //        }
+            //    }
+            //}
+
         }
-        private BigInteger Metodo(BigInteger original, int e, BigInteger mod)
+        private string Metodo(BigInteger original, int e, BigInteger mod)
         {
             BigInteger bytecif = new BigInteger();
             bytecif = original;
@@ -151,7 +208,7 @@ namespace Reposicion.Lab6
             {
                 bytecif = mod;
             }
-            return bytecif;
+            return bytecif.ToString();
         }
     }
 }

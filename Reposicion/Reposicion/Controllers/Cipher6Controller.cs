@@ -4,6 +4,7 @@ using Reposicion.Lab6;
 using System;
 using System.IO;
 using System.IO.Compression;
+using Reposicion.Lab5;
 
 namespace Reposicion.Controllers
 {
@@ -40,11 +41,9 @@ namespace Reposicion.Controllers
             }
             else
             {
-                using (FileStream thisFile = new FileStream("Mis Cifrados/" + Tipos.File.FileName, FileMode.OpenOrCreate))
-                {
-                    RSA Rsa = new RSA();
-                    Rsa.CifrarDescifrar(thisFile, Tipos.KeyPP);
-                }               
+                RSA Rsa = new RSA();
+                Rsa.CifrarDescifrar(Tipos.File, Tipos.FileKey, Tipos.KeyPP, Tipos.KeyCesar);
+
             }
             return new string[] { "Cifrado RSA satisfactorio" };
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 
 namespace Reposicion.Lab6
+
 {
     public class DH
     {

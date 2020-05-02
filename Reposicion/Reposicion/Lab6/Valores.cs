@@ -12,7 +12,9 @@ namespace Reposicion.Lab6
             int Primo1 { get; set; }
             int Primo2 { get; set; }
             string KeyPP { get; set; }
+            int KeyCesar { get; set; }
             IFormFile File { get; set; }
+            IFormFile FileKey { get; set; }
         }
     }
 }
