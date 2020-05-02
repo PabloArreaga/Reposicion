@@ -22,50 +22,33 @@ namespace Reposicion.Lab6
             {
                 inverso = phi + inverso;
             }
-            string[] llavePrivada = { e.ToString() + "," + N.ToString() };
+            string llavePrivada = e.ToString() + "," + N.ToString();
             CreateFile(llavePrivada, "Llave_Privada");
-            string[] llavePublica = { inverso.ToString() + "," + N.ToString() };
+            string llavePublica = inverso.ToString() + "," + N.ToString();
             CreateFile(llavePublica, "Llave_Publica");
             // llave publica ( e , N )
             // llave privada ( inverso , N )
         }
 
-        public void CreateFile(string[] textoResultante, string tipo)
+        public void CreateFile(string textoResultante, string tipo)
         {
-            using (var Archivo = new StreamWriter(@"RSA\" + tipo + ".txt", true))
+            using (FileStream Archivo = File.Create(@"RSA\" + tipo + ".txt"))
             {
-                foreach (var item in textoResultante)
-                {
-                    Archivo.Write(item);
-                }
+                byte[] info = new UTF8Encoding(true).GetBytes(textoResultante);
+                Archivo.Write(info, 0, info.Length);
+                byte[] data = new byte[] { 0x0 };
+                Archivo.Write(data, 0, data.Length);
             }
         }
-
-        public FileResult Download(List<string> files)
+        public void CompressFile()
         {
-            var archive = "~/archive.zip";
-            var temp = "~/temp";
-
-            // clear any existing archive
-            if (System.IO.File.Exists(archive))
+            string startPath = @"RSA";
+            string zipPath = @"RSA.zip";
+            if (File.Exists(zipPath))
             {
-                System.IO.File.Delete(archive);
+                File.Delete(zipPath);
             }
-            // empty the temp folder
-            Directory.EnumerateFiles(temp).ToList().ForEach(f => System.IO.File.Delete(f));
-
-            // copy the selected files to the temp folder
-            files.ForEach(f => System.IO.File.Copy(f, Path.Combine(temp, Path.GetFileName(f))));
-
-            // create a new archive
-            ZipFile.CreateFromDirectory(temp, archive);
-
-            return File(archive, "application/zip", "archive.zip");
-        }
-
-        private FileResult File(string archive, string v1, string v2)
-        {
-            throw new NotImplementedException();
+            System.IO.Compression.ZipFile.CreateFromDirectory(startPath, zipPath);
         }
 
         public int Encontare(int phi, int e)
