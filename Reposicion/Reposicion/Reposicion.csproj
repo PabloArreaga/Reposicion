@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Lab3\" />
+    <Folder Include="Lab4\" />
+    <Folder Include="Lab5\" />
+    <Folder Include="Lab6\" />
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+
+</Project>
